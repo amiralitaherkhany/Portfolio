@@ -1,4 +1,26 @@
 enum ProjectConstants {
+  svp(
+    repo: "https://github.com/amiralitaherkhany/Smart-Vehicle",
+    name: "Smart Vehicle",
+    description:
+        "A complete smart vehicle tracking and monitoring system connecting vehicle hardware, a Go backend, and a Flutter mobile app for real-time location and telemetry.",
+    screenShots: [
+      "${_baseUrl}Smart-Vehicle/master/screenshots/1.png",
+      "${_baseUrl}Smart-Vehicle/master/screenshots/2.png",
+      "${_baseUrl}Smart-Vehicle/master/screenshots/3.png",
+      "${_baseUrl}Smart-Vehicle/master/screenshots/4.png",
+      "${_baseUrl}Smart-Vehicle/master/screenshots/5.png",
+      "${_baseUrl}Smart-Vehicle/master/screenshots/6.png",
+    ],
+    skillNames: [
+      "dart",
+      "flutter",
+      "go",
+      "postgresql",
+      "redis",
+      "githubactions",
+    ],
+  ),
   valorantIntel(
     repo: "https://github.com/amiralitaherkhany/valorant-intel",
     name: "Valorant Intel",

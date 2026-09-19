@@ -87,7 +87,7 @@ class NameAndInfoSection extends StatelessWidget {
             height: 50,
           ),
           Text(
-            """Passionate and results-driven Android and Flutter Developer with a strong foundation in mobile application. Proficient in building high- performance, scalable applications using Kotlin for native Android (Jetpack Compose) and Flutter/Dart for cross-platform development.""",
+            """I’m a software developer focused on building modern mobile and backend applications. I work primarily with Flutter, Kotlin, Dart, and Go, with experience in developing scalable APIs and real-world applications. I enjoy turning ideas into practical, well-designed products while continuously improving my technical skills.""",
             style: TextStyle(
               color: Color(0xFFF5F5F5),
               fontSize: 25,

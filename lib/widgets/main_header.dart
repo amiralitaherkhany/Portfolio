@@ -103,7 +103,7 @@ class MobileView extends StatelessWidget {
       children: [
         PopupMenuButton<HeaderLink>(
           color: DarkColors.onBackgroundColor,
-          icon: Icon(
+          icon: FaIcon(
             FontAwesomeIcons.bars,
             color: DarkColors.myGrey,
           ),

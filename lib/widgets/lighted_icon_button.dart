@@ -14,7 +14,7 @@ class LightedIconButton extends StatefulWidget {
   final Color color;
   final String toolTip;
   final Color hoverColor;
-  final IconData faIcon;
+  final FaIconData faIcon;
   final VoidCallback onClick;
   @override
   State<LightedIconButton> createState() => _LightedIconButtonState();
