@@ -385,17 +385,33 @@ class _ProjectImage extends StatelessWidget {
             ),
           );
         },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) {
-            return child;
-          }
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          final isLoaded = wasSynchronouslyLoaded || frame != null;
 
-          return Shimmer.fromColors(
-            baseColor: DarkColors.headerTextColor,
-            highlightColor: DarkColors.myGrey,
-            child: Container(
-              color: Colors.white,
-            ),
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 400),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            layoutBuilder: (currentChild, previousChildren) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  ...previousChildren,
+                  ?currentChild,
+                ],
+              );
+            },
+            child: isLoaded
+                ? KeyedSubtree(
+                    key: const ValueKey('image'),
+                    child: child,
+                  )
+                : Shimmer.fromColors(
+                    key: const ValueKey('shimmer'),
+                    baseColor: DarkColors.headerTextColor,
+                    highlightColor: DarkColors.myGrey,
+                    child: Container(color: Colors.white),
+                  ),
           );
         },
       ),
