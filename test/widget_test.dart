@@ -425,4 +425,71 @@ void main() {
 
     tester.platformDispatcher.clearTextScaleFactorTestValue();
   });
+
+  testWidgets(
+    'project cards preserve state and gallery position when scrolled out of view',
+    (tester) async {
+      tester.view.physicalSize = const Size(800, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.dark,
+          home: const Scaffold(
+            body: SingleChildScrollView(
+              child: SizedBox(
+                height: 1000,
+                child: ProjectViewer(),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final firstCardState = tester.state(find.byType(ProjectCard).first);
+
+      final carouselFinder = find
+          .descendant(
+            of: find.byType(ProjectViewer),
+            matching: find.byType(PageView),
+          )
+          .first;
+      final carousel = tester.widget<PageView>(carouselFinder);
+
+      // Advance Card 0 gallery to page 1.
+      final card0GalleryFinder = find.descendant(
+        of: find.byType(ProjectCard).first,
+        matching: find.byType(PageView),
+      );
+      final card0Gallery = tester.widget<PageView>(card0GalleryFinder);
+      card0Gallery.controller!.jumpToPage(1);
+      await tester.pump();
+
+      // Scroll carousel to page 3, taking Card 0 off-screen.
+      carousel.controller!.jumpToPage(3);
+      await tester.pump();
+
+      // Card 0 must remain mounted (kept alive).
+      expect(firstCardState.mounted, isTrue);
+
+      // Scroll carousel back to page 0.
+      carousel.controller!.jumpToPage(0);
+      await tester.pump();
+
+      final currentFirstCardState = tester.state(
+        find.byType(ProjectCard).first,
+      );
+      expect(identical(firstCardState, currentFirstCardState), isTrue);
+
+      final card0GalleryAfter = tester.widget<PageView>(
+        find.descendant(
+          of: find.byType(ProjectCard).first,
+          matching: find.byType(PageView),
+        ),
+      );
+      expect(card0GalleryAfter.controller!.page, 1.0);
+    },
+  );
 }

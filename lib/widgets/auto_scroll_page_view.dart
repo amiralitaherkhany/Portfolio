@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:my_portfolio/widgets/visibility_scope.dart';
 
 /// A [PageView] that advances on its own.
@@ -40,7 +41,13 @@ class _AutoScrollPageViewState extends State<AutoScrollPageView> {
   Timer? _timer;
   int _page = 0;
   bool _userInteracting = false;
-  bool _animationsEnabled = true;
+  bool? _animationsEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _page = widget.controller.initialPage;
+  }
 
   @override
   void didChangeDependencies() {
@@ -71,7 +78,7 @@ class _AutoScrollPageViewState extends State<AutoScrollPageView> {
     _timer?.cancel();
     _timer = null;
 
-    if (!_animationsEnabled ||
+    if (_animationsEnabled != true ||
         _userInteracting ||
         widget.interval <= Duration.zero ||
         widget.itemCount <= 1) {
@@ -81,10 +88,23 @@ class _AutoScrollPageViewState extends State<AutoScrollPageView> {
     _timer = Timer.periodic(widget.interval, (_) => _advance());
   }
 
-  void _advance() {
-    if (!mounted || !widget.controller.hasClients) return;
+  bool get _isOffscreen {
+    RenderObject? ro = context.findRenderObject();
+    while (ro != null) {
+      final parentData = ro.parentData;
+      if (parentData is KeepAliveParentDataMixin && parentData.keptAlive) {
+        return true;
+      }
+      ro = ro.parent;
+    }
+    return false;
+  }
 
-    final next = (_page + 1) % widget.itemCount;
+  void _advance() {
+    if (!mounted || !widget.controller.hasClients || _isOffscreen) return;
+
+    final current = widget.controller.page?.round() ?? _page;
+    final next = (current + 1) % widget.itemCount;
     _page = next;
     widget.controller.animateToPage(
       next,

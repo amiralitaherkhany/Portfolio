@@ -299,6 +299,7 @@ class _ProjectViewerState extends State<ProjectViewer> {
             controller: controller,
             itemCount: projects.length,
             itemBuilder: (context, index) => ProjectCard(
+              key: ValueKey<ProjectConstants>(projects[index]),
               project: projects[index],
               descriptionHeight: text.descriptions[projects[index]],
             ),

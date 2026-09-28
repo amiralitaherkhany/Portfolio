@@ -119,8 +119,12 @@ class ProjectCard extends StatefulWidget {
   State<ProjectCard> createState() => _ProjectCardState();
 }
 
-class _ProjectCardState extends State<ProjectCard> {
+class _ProjectCardState extends State<ProjectCard>
+    with AutomaticKeepAliveClientMixin {
   late final PageController _galleryController;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -136,6 +140,7 @@ class _ProjectCardState extends State<ProjectCard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final project = widget.project;
     final colors = context.colors;
 
