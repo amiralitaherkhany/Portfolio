@@ -3,31 +3,76 @@ name: Deploy Portfolio to GitHub Pages
 on:
   push:
     branches:
-      - master  
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  quality:
+    name: Analyse and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Analyse
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: quality
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
-          channel: stable  
+          channel: stable
+          cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
+      - run: flutter pub get
 
       - name: Build web
-        run: flutter build web --release --pwa-strategy=none --base-href "/"
-        
+        run: flutter build web --release --base-href /
+
       - name: Create CNAME file
         run: echo "amiralitaherkhany.ir" > build/web/CNAME
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
+          path: build/web
+
+      - uses: actions/deploy-pages@v4
+        id: deployment
+
+      - name: Set custom domain
+        run: |
+          curl -sS -X PUT "https://api.github.com/repos/${{ github.repository }}/pages" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"cname":"amiralitaherkhany.ir","https_enforced":true}'
+
+      - run: echo "Deployed to ${{ steps.deployment.outputs.page_url }}"

@@ -1,7 +1,5 @@
-# My Portfolio
+# Portfolio
 
-this is my portfolio created with **Dart** and **Flutter**
+Personal portfolio built with **Flutter** and deployed to GitHub Pages.
 
-## Live Website
-
-[Click to visit the Live Portfolio](https://amiralitaherkhany.ir)
+**Live site:** <https://amiralitaherkhany.ir>

@@ -1,81 +1,119 @@
 <!doctype html>
-<html>
-    <head>
-        <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+<html lang="en">
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+<head>
+    <base href="$FLUTTER_BASE_HREF" />
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-        <base href="$FLUTTER_BASE_HREF" />
+    <!--
+            If you are serving your web app in a path other than the root,
+            change the href value below to reflect the base path you are serving
+            from. The path has to start and end with a slash.
+            For more details: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+        -->
 
-        <meta charset="UTF-8" />
-        <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="A new Flutter project." />
+    <title>Amirali Taherkhany — Software Engineer</title>
+    <meta name="description"
+        content="Portfolio of Amirali Taherkhany, a software engineer building mobile and backend applications with Flutter, Kotlin, Dart and Go." />
+    <meta name="author" content="Amirali Taherkhany" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href="https://amiralitaherkhany.ir/" />
 
-        <!-- iOS meta tags & icons -->
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="Amirali's Portfolio" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Open Graph: controls the preview shown when the link is shared. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://amiralitaherkhany.ir/" />
+    <meta property="og:site_name" content="Amirali Taherkhany" />
+    <meta property="og:title" content="Amirali Taherkhany — Software Engineer" />
+    <meta property="og:description"
+        content="Software engineer building modern mobile and backend applications with Flutter, Kotlin, Dart and Go." />
+    <meta property="og:image" content="https://amiralitaherkhany.ir/icons/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Amirali Taherkhany" />
 
-        <!-- Favicon -->
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Amirali Taherkhany — Software Engineer" />
+    <meta name="twitter:description"
+        content="Software engineer building modern mobile and backend applications with Flutter, Kotlin, Dart and Go." />
+    <meta name="twitter:image" content="https://amiralitaherkhany.ir/icons/icon-512.png" />
 
-        <title>Amirali's Portfolio</title>
-        <link rel="manifest" href="manifest.json" />
-        <style>
-            .container {
-                width: 100vw;
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Amirali Taherkhany" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+
+    <!-- Screenshot galleries are served from GitHub. -->
+    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
+
+    <link rel="manifest" href="manifest.json" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #000000;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .indicator {
+            width: 50vw;
+            max-width: 300px;
+            height: auto;
+        }
+
+        @media (max-width: 600px) {
             .indicator {
-                width: 50vw;
-                max-width: 300px;
-                height: auto;
+                width: 70vw;
+                max-width: 90vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading_indicator" class="container">
+        <img class="indicator" src="./assets/loading.gif" alt="" />
+    </div>
+    <script src="flutter_bootstrap.js" async></script>
+    <script>
+        // Remove the loading indicator as soon as Flutter paints its first
+        // frame, with a timeout as a safety net in case the event is missed.
+        (function () {
+            var removed = false;
+            var indicator = document.getElementById("loading_indicator");
+
+            function hide() {
+                if (removed || !indicator) return;
+                removed = true;
+                indicator.remove();
             }
 
-            @media (max-width: 600px) {
-                .indicator {
-                    width: 70vw;
-                    max-width: 90vw;
-                }
-            }
-        </style>
-    </head>
+            window.addEventListener("flutter-first-frame", hide);
+            window.addEventListener("load", function () {
+                setTimeout(hide, 15000);
+            });
+        })();
+    </script>
+</body>
 
-    <body style="overflow: hidden">
-        <div id="loading_indicator" class="container">
-            <img class="indicator" src="./assets/loading.gif" alt="" />
-        </div>
-        <style>
-            body {
-                background-color: black;
-            }
-        </style>
-        <script src="flutter_bootstrap.js" async></script>
-        <script>
-            window.onload = function () {
-                setTimeout(function () {
-                    var loadingIndicator =
-                        document.getElementById("loading_indicator");
-                    if (loadingIndicator) {
-                        loadingIndicator.remove();
-                    }
-                }, 10000);
-            };
-        </script>
-    </body>
 </html>

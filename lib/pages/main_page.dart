@@ -1,24 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio/constants/experience_constants.dart';
+import 'package:my_portfolio/controllers/navigation_controller.dart';
 import 'package:my_portfolio/extensions/context_extensions.dart';
-import 'package:my_portfolio/theme/dark_colors.dart';
+import 'package:my_portfolio/theme/app_tokens.dart';
+import 'package:my_portfolio/theme/breakpoints.dart';
+import 'package:my_portfolio/widgets/contact_cta.dart';
+import 'package:my_portfolio/widgets/content_column.dart';
+import 'package:my_portfolio/widgets/experience_viewer.dart';
 import 'package:my_portfolio/widgets/main_footer.dart';
 import 'package:my_portfolio/widgets/main_header.dart';
 import 'package:my_portfolio/widgets/my_information.dart';
-import 'package:my_portfolio/widgets/my_skill_bar.dart';
 import 'package:my_portfolio/widgets/project_viewer.dart';
+import 'package:my_portfolio/widgets/section_divider.dart';
+import 'package:my_portfolio/widgets/section_title.dart';
+import 'package:my_portfolio/widgets/skill_viewer.dart';
 import 'package:particles_network/particles_network.dart';
 
-class MainPage extends StatelessWidget {
+/// The single-page portfolio: hero, skills, projects, experience, contact and
+/// footer, assembled from slivers.
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  late final ScrollController _scrollController;
+  late final NavigationController _navigation;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_handleScroll);
+    _navigation = NavigationController(
+      headerHeight: AppTokens.defaultHeaderHeight,
+    );
+    _navigation.attach(_scrollController);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _navigation.updateHeaderHeight(context.tokens.headerHeight);
+
+    // The active section is derived from the scroll position, which is only
+    // meaningful once the slivers have been laid out. Without this the header
+    // would open with nothing highlighted until the first scroll event.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _navigation.updateActive();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_handleScroll)
+      ..dispose();
+    _navigation
+      ..detach(_scrollController)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _handleScroll() => _navigation.updateActive();
+
+  @override
   Widget build(BuildContext context) {
+    final gutter = Breakpoints.gutterFor(context.width);
+
     return Scaffold(
-      backgroundColor: DarkColors.backgroundColor,
       body: Stack(
         fit: StackFit.expand,
-        alignment: AlignmentGeometry.center,
-        children: [
+        children: <Widget>[
+          // Decorative background, paused when the tab is hidden.
           ParticleNetwork(
             particleCount: 60,
             maxSpeed: 0.5,
@@ -27,135 +82,119 @@ class MainPage extends StatelessWidget {
             lineDistance: context.width * 0.12 < 100
                 ? 100
                 : context.width * 0.12,
-            particleColor: Colors.blue,
-            lineColor: Colors.white,
-            touchColor: Colors.red,
+            particleColor: context.colors.primary,
+            lineColor: context.colors.onSurface.withValues(alpha: 0.35),
+            touchColor: context.colors.primary,
             touchActivation: false,
             drawNetwork: true,
             fill: false,
             isComplex: false,
           ),
-          CustomScrollView(
-            slivers: [
-              MainHeader(),
-              SliverPadding(
-                padding: EdgeInsetsGeometry.only(
-                  top: 60,
-                  right: context.percentageOfWidth(10),
-                  left: context.percentageOfWidth(10),
-                ),
-                sliver: MyInformation(),
-              ),
-              SliverDevider(
-                key: HeaderLink.skills.key,
-              ),
-              SliverToBoxAdapter(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Skills",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 52,
-                        color: DarkColors.headerTextColor,
-                      ),
+          // Desktop web has no visible scrollbar by default; the page is long
+          // enough that one helps.
+          Scrollbar(
+            controller: _scrollController,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: <Widget>[
+                MainHeader(navigation: _navigation),
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(gutter, 56, gutter, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: ContentColumn(
+                      child: MyInformation(navigation: _navigation),
                     ),
-                  ],
-                ),
-              ),
-              SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 40.0,
-                  horizontal: _getSkillsPadding(context),
-                ),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    addRepaintBoundaries: true,
-                    childCount: Skill.values.length,
-                    (context, index) {
-                      return SizedBox(
-                        width: 500,
-                        child: MySkillBar(
-                          skill: Skill.values[index],
-                        ),
-                      );
-                    },
-                  ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: _getSkillsGridColumnCount(context),
-                    mainAxisExtent: 75,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 25,
                   ),
                 ),
-              ),
-              SliverDevider(
-                key: HeaderLink.projects.key,
-              ),
-              SliverToBoxAdapter(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Projects",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 52,
-                        color: DarkColors.headerTextColor,
-                      ),
-                    ),
-                  ],
+                ..._buildSkills(gutter),
+                ..._buildProjects(),
+                if (kShowExperienceSection) ..._buildExperience(gutter),
+                ..._buildContact(gutter),
+                // Breathing room so the contact panel does not butt straight up
+                // against the footer, which is a distinct surface.
+                SliverToBoxAdapter(
+                  child: SizedBox(height: context.tokens.sectionGap),
                 ),
-              ),
-              SliverPadding(
-                padding: EdgeInsetsGeometry.only(
-                  top: 50,
-                  bottom: 50,
+                SliverToBoxAdapter(
+                  child: MainFooter(scrollController: _scrollController),
                 ),
-                sliver: SliverToBoxAdapter(
-                  child: ProjectViewer(),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MediaQuery.paddingOf(context).bottom),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: MainFooter(),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  int _getSkillsGridColumnCount(BuildContext context) {
-    return (context.width - (2 * _getSkillsPadding(context))) ~/ 500 <= 0
-        ? 1
-        : (context.width - (2 * _getSkillsPadding(context))) ~/ 500;
-  }
+  List<Widget> _buildSkills(double gutter) => <Widget>[
+    _sectionHeader(
+      AppSection.skills,
+      'Skills',
+      subtitle:
+          'The tools I reach for most often, from mobile UI to backend and '
+          'delivery.',
+    ),
+    SliverPadding(
+      padding: EdgeInsets.fromLTRB(gutter, 36, gutter, 0),
+      sliver: const SliverToBoxAdapter(
+        child: ContentColumn(child: SkillViewer()),
+      ),
+    ),
+  ];
 
-  double _getSkillsPadding(BuildContext context) {
-    return context.width > 1000
-        ? context.percentageOfWidth(10)
-        : context.percentageOfWidth(5);
-  }
-}
+  /// Full-bleed: the carousel spans the screen width, so it is intentionally
+  /// not wrapped in a gutter or a capped column.
+  List<Widget> _buildProjects() => <Widget>[
+    _sectionHeader(
+      AppSection.projects,
+      'Projects',
+      subtitle: 'A few things I have designed, built and shipped.',
+    ),
+    const SliverToBoxAdapter(child: ProjectViewer()),
+  ];
 
-class SliverDevider extends StatelessWidget {
-  const SliverDevider({
-    super.key,
-  });
+  List<Widget> _buildExperience(double gutter) => <Widget>[
+    _sectionHeader(
+      AppSection.experience,
+      'Experience',
+      subtitle: 'Where I have worked and what I have been building.',
+    ),
+    SliverPadding(
+      padding: EdgeInsets.fromLTRB(gutter, 36, gutter, 0),
+      sliver: const SliverToBoxAdapter(
+        child: ContentColumn(child: ExperienceViewer()),
+      ),
+    ),
+  ];
 
-  @override
-  Widget build(BuildContext context) {
+  List<Widget> _buildContact(double gutter) => <Widget>[
+    _sectionHeader(AppSection.contact, 'Contact'),
+    SliverPadding(
+      padding: EdgeInsets.fromLTRB(gutter, 32, gutter, 0),
+      sliver: const SliverToBoxAdapter(
+        child: ContentColumn(child: ContactCta()),
+      ),
+    ),
+  ];
+
+  /// Divider plus heading, carrying the key used as a scroll target.
+  Widget _sectionHeader(
+    AppSection section,
+    String title, {
+    String? subtitle,
+  }) {
     return SliverToBoxAdapter(
+      key: _navigation.keyFor(section),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 75.0),
-        child: Divider(
-          color: Colors.grey,
-          height: 2,
-          endIndent: context.percentageOfWidth(25),
-          indent: context.percentageOfWidth(25),
-          radius: BorderRadius.circular(10),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          children: <Widget>[
+            const SectionDivider(),
+            SectionTitle(title: title, subtitle: subtitle),
+          ],
         ),
       ),
     );
