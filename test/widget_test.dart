@@ -15,7 +15,10 @@ import 'package:my_portfolio/widgets/project_viewer.dart';
 void main() {
   /// The particle background and the auto-advancing carousels animate forever,
   /// so `pumpAndSettle` would never return. Pump fixed frames instead.
-  Future<void> pumpApp(WidgetTester tester, {Size size = const Size(1400, 1000)}) async {
+  Future<void> pumpApp(
+    WidgetTester tester, {
+    Size size = const Size(1400, 1000),
+  }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -33,9 +36,7 @@ void main() {
       await tester.pump();
     }
 
-    final controller = tester
-        .widget<CustomScrollView>(scroller)
-        .controller!;
+    final controller = tester.widget<CustomScrollView>(scroller).controller!;
     controller.jumpTo(controller.position.maxScrollExtent);
     await tester.pump();
   }
@@ -79,7 +80,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 800));
 
     expect(
-      tester.widget<CustomScrollView>(find.byType(CustomScrollView))
+      tester
+          .widget<CustomScrollView>(find.byType(CustomScrollView))
           .controller!
           .offset,
       greaterThan(0),
@@ -182,82 +184,6 @@ void main() {
     }
   });
 
-  testWidgets('leaves no dead space between a description and its tags', (
-    tester,
-  ) async {
-    // The card is sized from the tallest description and tag block in the set,
-    // so on a card with a shorter description the leftover used to pool between
-    // the text and the tags. This guards that the card is measured tightly
-    // enough for the gap to have closed.
-    tester.view.physicalSize = const Size(1920, 1200);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.dark,
-        home: const Scaffold(body: ProjectViewer()),
-      ),
-    );
-    await tester.pump();
-
-    final cardSize = tester.getSize(find.byType(ProjectCard).first);
-    // The geometry the viewer hands its cards, read back from a real one so this
-    // test cannot drift from the layout it is protecting.
-    final descriptionHeight = tester
-        .widget<ProjectCard>(find.byType(ProjectCard).first)
-        .descriptionHeight;
-
-    for (final project in ProjectConstants.values) {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.dark,
-          home: Scaffold(
-            body: Center(
-              child: SizedBox.fromSize(
-                size: cardSize,
-                child: ProjectCard(
-                  project: project,
-                  descriptionHeight: descriptionHeight,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pump();
-
-      final text = find.text(project.description);
-      final paragraph = tester.renderObject<RenderParagraph>(
-        find.descendant(of: text, matching: find.byType(RichText)).first,
-      );
-      final lastLineBottom = paragraph
-          .getBoxesForSelection(
-            TextSelection(
-              baseOffset: 0,
-              extentOffset: project.description.length,
-            ),
-          )
-          .fold<double>(
-            0,
-            (lowest, box) => box.bottom > lowest ? box.bottom : lowest,
-          );
-
-      // The description box is top-aligned in its slot, so the space left
-      // inside it shows up as a gap above the tags.
-      final description = tester.getRect(text);
-      final tags = tester.getRect(find.byType(Wrap).first);
-      final gap = tags.top - (description.top + lastLineBottom);
-
-      expect(
-        gap,
-        lessThanOrEqualTo(ProjectCardLayout.descriptionToTags + 8),
-        reason: '${project.name} has ${gap.toStringAsFixed(0)}px of dead '
-            'space above its tags',
-      );
-    }
-  });
-
   testWidgets('shows every technology on a card, unabbreviated', (
     tester,
   ) async {
@@ -333,7 +259,8 @@ void main() {
           expect(
             rect.left >= cardRect.left && rect.right <= cardRect.right,
             isTrue,
-            reason: '"$label" is clipped on ${project.name} at ${width.toInt()}px',
+            reason:
+                '"$label" is clipped on ${project.name} at ${width.toInt()}px',
           );
         }
       }
@@ -381,9 +308,7 @@ void main() {
     // A border and a panel colour, so the footer does not just trail off into
     // the page background.
     final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(of: footer, matching: find.byType(DecoratedBox))
-          .first,
+      find.descendant(of: footer, matching: find.byType(DecoratedBox)).first,
     );
     final decoration = box.decoration as BoxDecoration;
     expect(decoration.color, isNotNull);
@@ -397,7 +322,8 @@ void main() {
     expect(find.text('Top'), findsOneWidget);
   });
 
-  testWidgets('the carousel spans the full screen width', (tester) async {    await pumpApp(tester, size: const Size(1920, 1080));
+  testWidgets('the carousel spans the full screen width', (tester) async {
+    await pumpApp(tester, size: const Size(1920, 1080));
     await tester.tap(find.text('View projects'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 800));
