@@ -1,3 +1,4 @@
+
 name: Deploy Portfolio to GitHub Pages
 
 on:
@@ -15,16 +16,19 @@ permissions:
 jobs:
   quality:
     name: Analyse and test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    runs-on: ubuntu-24.04
 
-      - uses: subosito/flutter-action@v2
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Analyse
         run: flutter analyze --fatal-infos
@@ -36,12 +40,14 @@ jobs:
     name: Deploy to GitHub Pages
     needs: quality
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    runs-on: ubuntu-latest
+
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
       pages: write
       id-token: write
+      actions: read
 
     environment:
       name: github-pages
@@ -52,26 +58,35 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-      - name: Build web
-        run: flutter build web --release --base-href /
+      - name: Build Flutter Web
+        run: |
+          flutter build web \
+            --release \
+            --base-href / \
+            --no-web-resources-cdn
 
-      - name: Create CNAME file
+      - name: Create CNAME
         run: echo "amiralitaherkhany.ir" > build/web/CNAME
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/web
 
-      - uses: actions/deploy-pages@v4
+      - name: Deploy Pages
+        uses: actions/deploy-pages@v5
         id: deployment
 
-      - run: echo "Deployed to ${{ steps.deployment.outputs.page_url }}"
+      - name: Show Deployment URL
+        run: echo "Deployed to ${{ steps.deployment.outputs.page_url }}"
