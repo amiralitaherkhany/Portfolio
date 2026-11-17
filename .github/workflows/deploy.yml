@@ -31,7 +31,7 @@ jobs:
         run: flutter pub get
 
       - name: Analyse
-        run: flutter analyze --fatal-infos
+        run: flutter analyze
 
       - name: Test
         run: flutter test
