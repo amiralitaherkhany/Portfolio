@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:my_portfolio/constants/experience_constants.dart';
 import 'package:my_portfolio/constants/personal_info.dart';
 import 'package:my_portfolio/controllers/navigation_controller.dart';
@@ -50,7 +50,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     final colors = context.colors;
     final isScrolled = shrinkOffset > 0 || overlapsContent;
 
@@ -123,10 +127,9 @@ class _BrandButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final compact = MediaQuery.sizeOf(context).width < Breakpoints.sm;
-    final style = (compact
-            ? context.texts.titleMedium
-            : context.texts.titleLarge)
-        ?.copyWith(color: Colors.white);
+    final style =
+        (compact ? context.texts.titleMedium : context.texts.titleLarge)
+            ?.copyWith(color: Colors.white);
 
     return Semantics(
       button: true,
@@ -205,18 +208,19 @@ class _NavLinkState extends State<_NavLink> {
     final background = widget.isActive
         ? colors.primary.withValues(alpha: 0.16)
         : _hovered
-            ? colors.onSurface.withValues(alpha: 0.07)
-            : Colors.transparent;
+        ? colors.onSurface.withValues(alpha: 0.07)
+        : Colors.transparent;
     final foreground = widget.isActive
         ? colors.primary
         : _hovered
-            ? colors.onSurface
-            : context.mutedText;
+        ? colors.onSurface
+        : context.mutedText;
 
-    final style = (widget.isActive ? context.texts.titleMedium : text)!.copyWith(
-      color: foreground,
-      fontWeight: widget.isActive ? FontWeight.w700 : FontWeight.w500,
-    );
+    final style = (widget.isActive ? context.texts.titleMedium : text)!
+        .copyWith(
+          color: foreground,
+          fontWeight: widget.isActive ? FontWeight.w700 : FontWeight.w500,
+        );
 
     return Semantics(
       button: true,
@@ -345,8 +349,7 @@ class _NavPopup extends StatelessWidget {
 /// Navigation entries, minus anything the author has switched off.
 List<AppSection> get _visibleSections => AppSection.values
     .where(
-      (section) =>
-          section != AppSection.experience || kShowExperienceSection,
+      (section) => section != AppSection.experience || kShowExperienceSection,
     )
     .toList(growable: false);
 

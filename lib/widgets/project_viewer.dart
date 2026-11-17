@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:my_portfolio/constants/project_constants.dart';
 import 'package:my_portfolio/constants/skill_constants.dart';
 import 'package:my_portfolio/extensions/context_extensions.dart';

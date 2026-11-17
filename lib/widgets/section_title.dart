@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:my_portfolio/extensions/context_extensions.dart';
 import 'package:my_portfolio/theme/breakpoints.dart';
 import 'package:my_portfolio/widgets/gradiant_text.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:my_portfolio/constants/personal_info.dart';
 import 'package:my_portfolio/constants/project_constants.dart';
 import 'package:my_portfolio/constants/skill_constants.dart';
@@ -72,9 +72,10 @@ class _IntroSection extends StatelessWidget {
           child: Text(
             PersonalInfo.fullName,
             textAlign: centered ? TextAlign.center : TextAlign.start,
-            style: (compact ? texts.displaySmall : texts.displayLarge)?.copyWith(
-              color: context.colors.onSurface,
-            ),
+            style: (compact ? texts.displaySmall : texts.displayLarge)
+                ?.copyWith(
+                  color: context.colors.onSurface,
+                ),
           ),
         ),
         const SizedBox(height: 10),

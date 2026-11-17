@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:my_portfolio/theme/app_palette.dart';
 import 'package:my_portfolio/theme/app_tokens.dart';
 
@@ -25,10 +25,12 @@ abstract final class AppTheme {
 
     return base.copyWith(
       colorScheme: scheme,
-      scaffoldBackgroundColor:
-          isDark ? AppPalette.darkBackground : AppPalette.lightBackground,
-      canvasColor:
-          isDark ? AppPalette.darkBackground : AppPalette.lightBackground,
+      scaffoldBackgroundColor: isDark
+          ? AppPalette.darkBackground
+          : AppPalette.lightBackground,
+      canvasColor: isDark
+          ? AppPalette.darkBackground
+          : AppPalette.lightBackground,
       textTheme: textTheme,
       primaryTextTheme: textTheme,
       dividerTheme: DividerThemeData(
@@ -87,8 +89,7 @@ abstract final class AppTheme {
       : AppPalette.lightOutline;
 
   /// Shared muted (secondary) text color for the given brightness.
-  static Color mutedFor(Brightness brightness) =>
-      brightness == Brightness.dark
+  static Color mutedFor(Brightness brightness) => brightness == Brightness.dark
       ? AppPalette.darkMuted
       : AppPalette.lightMuted;
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:my_portfolio/constants/link_constants.dart';
 import 'package:my_portfolio/constants/personal_info.dart';
 import 'package:my_portfolio/constants/project_constants.dart';
@@ -41,7 +41,9 @@ class MainFooter extends StatelessWidget {
           // Gradient hairline: the strongest single cue that the page ends here.
           Container(
             height: 3,
-            decoration: BoxDecoration(gradient: LinearGradient(colors: tokens.gradient)),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: tokens.gradient),
+            ),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(
@@ -120,8 +122,7 @@ class _FooterColumns extends StatelessWidget {
           spacing: spacing,
           runSpacing: 30,
           children: <Widget>[
-            for (final column in columns)
-              SizedBox(width: width, child: column),
+            for (final column in columns) SizedBox(width: width, child: column),
           ],
         );
       },
@@ -145,7 +146,9 @@ class _IdentitySection extends StatelessWidget {
       children: <Widget>[
         Row(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: centered ? MainAxisAlignment.center : MainAxisAlignment.start,
+          mainAxisAlignment: centered
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
           children: <Widget>[
             const _Monogram(),
             const SizedBox(width: 14),

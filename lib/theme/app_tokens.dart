@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Design tokens (spacing, radii, gradients) exposed as a [ThemeExtension] so
 /// widgets never hardcode magic numbers and every value can be themed.
@@ -82,8 +82,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
     if (a.isEmpty || b.isEmpty) return t < 0.5 ? a : b;
     final length = a.length < b.length ? a.length : b.length;
     return <Color>[
-      for (var i = 0; i < length; i++)
-        Color.lerp(a[i], b[i], t) ?? a[i],
+      for (var i = 0; i < length; i++) Color.lerp(a[i], b[i], t) ?? a[i],
     ];
   }
 }
