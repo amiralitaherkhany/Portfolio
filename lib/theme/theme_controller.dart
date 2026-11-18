@@ -5,7 +5,7 @@ class ThemeController extends ValueNotifier<ThemeMode> {
   ThemeController() : super(ThemeMode.dark);
 
   void toggle() {
-    Color.toARGB32 = value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    value = value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
   }
 
   bool isDark(BuildContext context) =>
@@ -24,20 +24,24 @@ class ThemeScope extends InheritedNotifier<ThemeController> {
 
   static ThemeController of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<ThemeScope>();
+
     assert(
       scope?.notifier != null,
       'ThemeScope is missing above this context.',
     );
+
     return scope!.notifier!;
   }
 
   /// Reads the controller without subscribing to changes.
   static ThemeController read(BuildContext context) {
     final scope = context.getInheritedWidgetOfExactType<ThemeScope>();
+
     assert(
       scope?.notifier != null,
       'ThemeScope is missing above this context.',
     );
+
     return scope!.notifier!;
   }
 }
