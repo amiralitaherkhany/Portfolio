@@ -74,7 +74,7 @@ jobs:
           flutter build web \
             --release \
             --base-href / \
-            --no-web-resources-cdn
+            --no-web-resources-cdn \
             --wasm
 
       - name: Create CNAME
