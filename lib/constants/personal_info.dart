@@ -6,13 +6,13 @@ abstract final class PersonalInfo {
 
   static const String fullName = '$firstName $lastName';
 
-  static const String role = 'Software Engineer';
+  static const String role = 'Software Developer';
 
   static const String tagline =
       'Transforming ideas into elegant code and purposeful innovation.';
 
   static const String bio =
-      'I’m a software engineer focused on building modern mobile and backend '
+      'I’m a software Developer focused on building modern mobile and backend '
       'applications. I work primarily with Flutter, Kotlin, Dart, and Go, with '
       'experience in developing scalable APIs and real-world applications. I '
       'enjoy turning ideas into practical, well-designed products while '

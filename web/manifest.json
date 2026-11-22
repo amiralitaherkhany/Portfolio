@@ -1,11 +1,11 @@
 {
-  "name": "Amirali Taherkhany — Software Engineer",
+  "name": "Amirali Taherkhany — Software Developer",
   "short_name": "Portfolio",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "description": "Portfolio of Amirali Taherkhany, a software engineer building mobile and backend applications with Flutter, Kotlin, Dart and Go.",
+  "description": "Portfolio of Amirali Taherkhany, a software developer building mobile and backend applications with Flutter, Kotlin, Dart and Go.",
   "lang": "en",
   "icons": [
     {
