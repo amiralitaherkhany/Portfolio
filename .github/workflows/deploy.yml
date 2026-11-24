@@ -69,13 +69,37 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      
       - name: Build Flutter Web
         run: |
           flutter build web \
             --release \
             --base-href / \
             --no-web-resources-cdn \
-            --wasm
+
+      - name: Configure CanvasKit URL
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("build/web/flutter_bootstrap.js")
+          content = path.read_text()
+
+          needle = "_flutter.loader.load({"
+
+          if needle not in content:
+              raise RuntimeError("Flutter loader configuration not found!")
+
+          config = '''_flutter.loader.load({
+            config: {
+              canvasKitBaseUrl: "https://amiralitaherkhany.ir/canvaskit/"
+            },'''
+
+          content = content.replace(needle, config, 1)
+          path.write_text(content)
+
+          print("CanvasKit URL configured successfully.")
+          PY
 
       - name: Create CNAME
         run: echo "amiralitaherkhany.ir" > build/web/CNAME
@@ -91,3 +115,4 @@ jobs:
 
       - name: Show Deployment URL
         run: echo "Deployed to ${{ steps.deployment.outputs.page_url }}"
+
