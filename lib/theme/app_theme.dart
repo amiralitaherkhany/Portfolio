@@ -95,78 +95,84 @@ abstract final class AppTheme {
 
   /// Semantic type scale. Widgets use these instead of hardcoded font sizes so
   /// typography stays consistent and accessible.
+
   static TextTheme _textTheme(TextTheme base, ColorScheme scheme) {
     final heading = scheme.onSurface;
     final body = scheme.onSurface;
 
-    return base.copyWith(
-      displayLarge: base.displayLarge?.copyWith(
+    // Apply Inter font to all text styles.
+    final themedBase = base.apply(
+      fontFamily: 'Inter',
+    );
+
+    return themedBase.copyWith(
+      displayLarge: themedBase.displayLarge?.copyWith(
         fontSize: 56,
         fontWeight: FontWeight.w800,
         letterSpacing: -1.5,
         height: 1.05,
         color: heading,
       ),
-      displayMedium: base.displayMedium?.copyWith(
+      displayMedium: themedBase.displayMedium?.copyWith(
         fontSize: 44,
         fontWeight: FontWeight.w800,
         letterSpacing: -1.2,
         height: 1.08,
         color: heading,
       ),
-      displaySmall: base.displaySmall?.copyWith(
+      displaySmall: themedBase.displaySmall?.copyWith(
         fontSize: 32,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.8,
         height: 1.15,
         color: heading,
       ),
-      headlineMedium: base.headlineMedium?.copyWith(
+      headlineMedium: themedBase.headlineMedium?.copyWith(
         fontSize: 28,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
         height: 1.2,
         color: heading,
       ),
-      headlineSmall: base.headlineSmall?.copyWith(
+      headlineSmall: themedBase.headlineSmall?.copyWith(
         fontSize: 24,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.4,
         height: 1.25,
         color: heading,
       ),
-      titleLarge: base.titleLarge?.copyWith(
+      titleLarge: themedBase.titleLarge?.copyWith(
         fontSize: 22,
         fontWeight: FontWeight.w700,
         color: heading,
       ),
-      titleMedium: base.titleMedium?.copyWith(
+      titleMedium: themedBase.titleMedium?.copyWith(
         fontSize: 17,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.1,
         color: heading,
       ),
-      bodyLarge: base.bodyLarge?.copyWith(
+      bodyLarge: themedBase.bodyLarge?.copyWith(
         fontSize: 18,
         height: 1.6,
         color: body,
       ),
-      bodyMedium: base.bodyMedium?.copyWith(
+      bodyMedium: themedBase.bodyMedium?.copyWith(
         fontSize: 15.5,
         height: 1.55,
         color: body,
       ),
-      bodySmall: base.bodySmall?.copyWith(
+      bodySmall: themedBase.bodySmall?.copyWith(
         fontSize: 13.5,
         height: 1.45,
         color: body,
       ),
-      labelLarge: base.labelLarge?.copyWith(
+      labelLarge: themedBase.labelLarge?.copyWith(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.2,
       ),
-      labelMedium: base.labelMedium?.copyWith(
+      labelMedium: themedBase.labelMedium?.copyWith(
         fontSize: 13.5,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.3,
