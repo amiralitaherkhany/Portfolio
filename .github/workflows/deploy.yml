@@ -74,7 +74,8 @@ jobs:
         run: |
           flutter build web \
             --release \
-            --base-href / \
+            --pwa-strategy=none \
+            --base-href "/" \
             --no-web-resources-cdn \
 
       - name: Configure CanvasKit URL
