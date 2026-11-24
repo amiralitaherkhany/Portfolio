@@ -107,11 +107,14 @@ jobs:
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v5
         with:
+          name: github-pages
           path: build/web
 
       - name: Deploy Pages
         uses: actions/deploy-pages@v5
         id: deployment
+        with:
+          artifact_name: github-pages
 
       - name: Show Deployment URL
         run: echo "Deployed to ${{ steps.deployment.outputs.page_url }}"
